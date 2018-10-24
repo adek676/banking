@@ -1,5 +1,6 @@
 package com.staffgenics.training.banking.account;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AccountService {
 
   private final AccountRepository accountRepository;
@@ -22,18 +24,21 @@ public class AccountService {
   }
 
   Long createAccount(AccountDto accountDto){
+    log.info("Dodawanie nowego konta");
     AccountEntity accountEntity = AccountEntity.createInstance(accountDto);
     accountRepository.save(accountEntity);
     return accountEntity.getId();
   }
 
   AccountDto getAccount(Long id){
+    log.info("Pobieranie konta o id: " + id);
     AccountEntity accountEntity = findAccountEntity(id);
     AccountDto accountDto = AccountDto.createInstance(accountEntity);
     return accountDto;
   }
 
   void editAccount(AccountDto accountDto, Long id){
+    log.info("Modyfikacja konta o id: " + id);
     AccountEntity accountEntity = findAccountEntity(id);
     accountEntity.update(accountDto);
     accountRepository.save(accountEntity);
@@ -46,6 +51,4 @@ public class AccountService {
     }
     return accountEntity.get();
   }
-
-
 }
