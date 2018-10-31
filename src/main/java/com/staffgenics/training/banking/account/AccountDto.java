@@ -1,6 +1,5 @@
 package com.staffgenics.training.banking.account;
 
-import com.staffgenics.training.banking.client.ClientEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +17,11 @@ public class AccountDto {
 
   private String accountNumber;
 
-  private Currency currency;
+  private String currency;
 
   private BigDecimal balance;
+
+  private BigDecimal balanceInPln;
 
   static AccountDto createInstance(AccountEntity accountEntity){
     AccountDto accountDto = new AccountDto();

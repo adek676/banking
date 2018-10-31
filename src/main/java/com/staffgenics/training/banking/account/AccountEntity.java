@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "account")
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Getter(AccessLevel.PACKAGE)
-@Setter(AccessLevel.PACKAGE)
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
 public class AccountEntity {
 
   @Id
@@ -23,8 +23,7 @@ public class AccountEntity {
 
   private String accountNumber;
 
-  @Enumerated(EnumType.STRING)
-  private Currency currency;
+  private String currency;
 
   private BigDecimal balance;
 
