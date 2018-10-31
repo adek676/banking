@@ -14,12 +14,18 @@ public class OperationController {
   }
 
   @RequestMapping(value = "/operation", method = RequestMethod.POST)
-  public Long createOperation(@RequestBody OperationDto operationDto){
+  public Long createOperation(@RequestBody OperationDto operationDto) {
     return operationService.createOperation(operationDto);
   }
 
   @RequestMapping(value = "/account/{accountId}/operation/{operationId}", method = RequestMethod.GET)
-  public OperationDto getOperation(@PathVariable Long accountId, @PathVariable Long operationId){
+  public OperationDto getOperation(@PathVariable Long accountId, @PathVariable Long operationId) {
     return operationService.getOperation(accountId, operationId);
+  }
+
+  @RequestMapping(value = "/account/{id}/operations")
+  public OperationDto getOperation(@PathVariable Long id, @RequestBody OperationFilterDto operationFilterDto){
+    return operationService.getOperation(id, operationFilterDto.getMinAmount(),
+        operationFilterDto.getMaxAmount(), operationFilterDto.getDateFrom(), operationFilterDto.getDateEnd());
   }
 }

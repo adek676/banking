@@ -63,9 +63,7 @@ public class AccountService {
   }
 
   private void convertBalanceToPln(AccountDto accountDto, CurrencyRatesEntity currency){
-    if (!currency.getCurrencyName().equals("PLN")){
       accountDto.setBalanceInPln(accountDto.getBalance().multiply(currency.getConversionRate()));
-    }
   }
 
   private CurrencyRatesEntity findCurrency(String currency){

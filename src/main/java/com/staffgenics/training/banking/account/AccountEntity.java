@@ -36,11 +36,4 @@ public class AccountEntity {
 
     return accountEntity;
   }
-
-  void update(AccountDto accountDto){
-    setAccountNumber(accountDto.getAccountNumber());
-    setCurrency(accountDto.getCurrency());
-    setClientId(accountDto.getClientId());
-    setBalance(accountDto.getBalance());
-  }
 }

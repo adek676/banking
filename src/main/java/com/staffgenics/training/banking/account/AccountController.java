@@ -27,4 +27,5 @@ public class AccountController {
   public AccountDto getAccount(@PathVariable Long id){
     return accountService.getAccount(id);
   }
+
 }

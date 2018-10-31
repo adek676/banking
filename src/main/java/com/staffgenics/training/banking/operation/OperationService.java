@@ -7,8 +7,12 @@ import com.staffgenics.training.banking.currency.CurrencyRatesEntity;
 import com.staffgenics.training.banking.currency.CurrencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -33,7 +37,27 @@ public class OperationService {
     return OperationDto.createInstance(entity);
   }
 
-  Long createOperation(OperationDto operationDto) {
+  OperationDto getOperation(Long accountId, BigDecimal minAmount, BigDecimal maxAmount, String dateFrom, String dateEnd){
+
+    Optional<OperationEntity> foundOperation =
+        operationRepository.findOperationEntitiesByParams(accountId, convertToDate(dateFrom), convertToDate(dateEnd), minAmount, maxAmount);
+    if (!foundOperation.isPresent()){
+      throw new IllegalArgumentException("nie znaleziono podanej operacji");
+    }
+    return OperationDto.createInstance(foundOperation.get());
+  }
+
+  private Date convertToDate(String dateString){
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+    try {
+      return formatter.parse(dateString);
+    }catch (ParseException e){
+      throw new RuntimeException("Invalid date format");
+    }
+  }
+
+  @Transactional
+  public Long createOperation(OperationDto operationDto) {
     if (!NrbNumberValidator.isNrbNumberValid(operationDto.getDestinationAccountNumber())) {
       throw new IllegalArgumentException("Podany numer konta nie jest poprawny");
     }
