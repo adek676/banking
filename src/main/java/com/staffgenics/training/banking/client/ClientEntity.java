@@ -1,11 +1,11 @@
 package com.staffgenics.training.banking.client;
 
-import javax.persistence.*;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
 
 /**
  * Encja z danymi klienta.
@@ -30,6 +30,8 @@ public class ClientEntity {
   private String secondName;
 
   private boolean vip;
+
+  private boolean resident;
 
   static ClientEntity createInstance(ClientDto clientDto) {
     ClientEntity clientEntity = new ClientEntity();

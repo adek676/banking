@@ -24,6 +24,8 @@ public class ClientDto {
 
   private boolean vip;
 
+  private boolean resident;
+
   static ClientDto createInstance(ClientEntity clientEntity) {
     ClientDto clientDto = new ClientDto();
     clientDto.setId(clientEntity.getId());
@@ -32,6 +34,7 @@ public class ClientDto {
     clientDto.setPesel(clientEntity.getPesel());
     clientDto.setSecondName(clientEntity.getSecondName());
     clientDto.setVip(clientEntity.isVip());
+    clientDto.setResident(clientEntity.isResident());
     return clientDto;
   }
 }

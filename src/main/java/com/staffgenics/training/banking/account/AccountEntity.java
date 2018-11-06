@@ -1,5 +1,6 @@
 package com.staffgenics.training.banking.account;
 
+import com.staffgenics.training.banking.currency.CurrencyRatesEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,15 +22,18 @@ public class AccountEntity {
 
   private Long clientId;
 
+  @Version
+  private Long version;
+
   private String accountNumber;
 
-  private String currency;
+  @OneToOne
+  private CurrencyRatesEntity currency;
 
   private BigDecimal balance;
 
   static AccountEntity createInstance(AccountDto accountDto){
     AccountEntity accountEntity = new AccountEntity();
-    accountEntity.setCurrency(accountDto.getCurrency());
     accountEntity.setClientId(accountDto.getClientId());
     accountEntity.setBalance(accountDto.getBalance());
     accountEntity.setAccountNumber(accountDto.getAccountNumber());

@@ -25,50 +25,51 @@ public class AccountService {
     this.currencyRepository = currencyRepository;
   }
 
-  List<AccountDto> getAccounts(){
+  List<AccountDto> getAccounts() {
     return accountRepository.findAll()
-          .stream().map(AccountDto::createInstance)
-          .collect(Collectors.toList());
+        .stream().map(AccountDto::createInstance)
+        .collect(Collectors.toList());
   }
 
-  Long createAccount(AccountDto accountDto){
+  Long createAccount(AccountDto accountDto) {
     log.info("Dodawanie nowego konta");
-    if (!accountDto.getBalance().equals(new BigDecimal(0))){
+    if (!accountDto.getBalance().equals(new BigDecimal(0))) {
       throw new InvalidAccountException("New account must have balance equal to 0.");
     }
-    if (!NrbNumberValidator.isNrbNumberValid(accountDto.getAccountNumber())){
+    if (!NrbNumberValidator.isNrbNumberValid(accountDto.getAccountNumber())) {
       throw new InvalidAccountException("Account number is not valid");
     }
-    findCurrency(accountDto.getCurrency());
+    CurrencyRatesEntity currency = findCurrencyBySymbol(accountDto.getCurrency());
     AccountEntity accountEntity = AccountEntity.createInstance(accountDto);
+    accountEntity.setCurrency(currency);
+
     accountRepository.save(accountEntity);
     return accountEntity.getId();
   }
 
-  AccountDto getAccount(Long id){
+  AccountDto getAccount(Long id) {
     log.info("Pobieranie konta o id: " + id);
     AccountEntity accountEntity = findAccountEntity(id);
-    CurrencyRatesEntity currency = findCurrency(accountEntity.getCurrency());
     AccountDto accountDto = AccountDto.createInstance(accountEntity);
-    convertBalanceToPln(accountDto, currency);
+    convertBalanceToPln(accountDto, accountEntity.getCurrency());
     return accountDto;
   }
 
-  private AccountEntity findAccountEntity(Long id){
+  private AccountEntity findAccountEntity(Long id) {
     Optional<AccountEntity> accountEntity = accountRepository.findById(id);
-    if (!accountEntity.isPresent()){
+    if (!accountEntity.isPresent()) {
       throw new IllegalArgumentException("nie znaleziono encji");
     }
     return accountEntity.get();
   }
 
-  private void convertBalanceToPln(AccountDto accountDto, CurrencyRatesEntity currency){
-      accountDto.setBalanceInPln(accountDto.getBalance().multiply(currency.getConversionRate()));
+  private void convertBalanceToPln(AccountDto accountDto, CurrencyRatesEntity currency) {
+    accountDto.setBalanceInPln(accountDto.getBalance().multiply(currency.getConversionRate()));
   }
 
-  private CurrencyRatesEntity findCurrency(String currency){
+  private CurrencyRatesEntity findCurrencyBySymbol(String currency) {
     Optional<CurrencyRatesEntity> currencyRatesEntityOptional = currencyRepository.findByCurrencyName(currency);
-    if (!currencyRatesEntityOptional.isPresent()){
+    if (!currencyRatesEntityOptional.isPresent()) {
       throw new IllegalArgumentException("Podana waluta nie istnieje");
     }
     return currencyRatesEntityOptional.get();

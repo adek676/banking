@@ -13,7 +13,9 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OperationService {
@@ -37,14 +39,10 @@ public class OperationService {
     return OperationDto.createInstance(entity);
   }
 
-  OperationDto getOperation(Long accountId, BigDecimal minAmount, BigDecimal maxAmount, String dateFrom, String dateEnd){
-
-    Optional<OperationEntity> foundOperation =
-        operationRepository.findOperationEntitiesByParams(accountId, convertToDate(dateFrom), convertToDate(dateEnd), minAmount, maxAmount);
-    if (!foundOperation.isPresent()){
-      throw new IllegalArgumentException("nie znaleziono podanej operacji");
-    }
-    return OperationDto.createInstance(foundOperation.get());
+  List<OperationDto> getOperation(Long accountId, BigDecimal minAmount, BigDecimal maxAmount, String dateFrom, String dateEnd){
+    return operationRepository
+            .findOperationEntitiesByParams(accountId, convertToDate(dateFrom), convertToDate(dateEnd), minAmount, maxAmount)
+            .stream().map(OperationDto::createInstance).collect(Collectors.toList());
   }
 
   private Date convertToDate(String dateString){
@@ -58,10 +56,10 @@ public class OperationService {
 
   @Transactional
   public Long createOperation(OperationDto operationDto) {
+    AccountEntity accountEntity = findAccount(operationDto.getAccountId());
     if (!NrbNumberValidator.isNrbNumberValid(operationDto.getDestinationAccountNumber())) {
       throw new IllegalArgumentException("Podany numer konta nie jest poprawny");
     }
-    AccountEntity accountEntity = findAccount(operationDto.getAccountId());
     OperationTypeEntity operationType = findOperationType(operationDto.getOperationType());
 
     updateAccountBalance(accountEntity, operationDto.getAmount(), operationType.isIncome());
@@ -93,6 +91,7 @@ public class OperationService {
       throw new IllegalArgumentException("Numer konta o podanym id nie istnieje");
     }
     return accountEntityOptional.get();
+//    return accountRepository.getOne(accountId);
   }
 
   private OperationTypeEntity findOperationType(String name){

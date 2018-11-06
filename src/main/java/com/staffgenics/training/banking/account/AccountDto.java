@@ -15,6 +15,8 @@ public class AccountDto {
 
   private Long clientId;
 
+  private Long version;
+
   private String accountNumber;
 
   private String currency;
@@ -28,8 +30,9 @@ public class AccountDto {
     accountDto.setId(accountEntity.getId());
     accountDto.setClientId(accountEntity.getClientId());
     accountDto.setAccountNumber(accountEntity.getAccountNumber());
-    accountDto.setCurrency(accountEntity.getCurrency());
+    accountDto.setCurrency(accountEntity.getCurrency().getCurrencyName());
     accountDto.setBalance(accountEntity.getBalance());
+    accountDto.setVersion(accountEntity.getVersion());
 
     return accountDto;
   }

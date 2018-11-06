@@ -34,6 +34,16 @@ public class ClientController {
     return clientService.getClient(id);
   }
 
+  @RequestMapping(value = "/client/find", method = RequestMethod.POST)
+  public ClientDto getClientWithParams(@RequestBody ClientCriteria clientCriteria) {
+    return clientService.getClientByParams(clientCriteria.getName(), clientCriteria.getSurname(), clientCriteria.isVip());
+  }
+
+  @RequestMapping(value = "/client/pesel/{pesel}", method = RequestMethod.GET)
+  public ClientDto getClientByPesel(@PathVariable String pesel){
+    return clientService.getClientByPesel(pesel);
+  }
+
   @RequestMapping(value = "/client/{id}", method = RequestMethod.PUT)
   public void createClient(@RequestBody ClientDto clientDto, @PathVariable Long id) {
     clientService.editClient(clientDto, id);

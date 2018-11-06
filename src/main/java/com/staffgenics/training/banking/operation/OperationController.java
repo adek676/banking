@@ -3,6 +3,8 @@ package com.staffgenics.training.banking.operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class OperationController {
 
@@ -24,7 +26,7 @@ public class OperationController {
   }
 
   @RequestMapping(value = "/account/{id}/operations")
-  public OperationDto getOperation(@PathVariable Long id, @RequestBody OperationFilterDto operationFilterDto){
+  public List<OperationDto> getOperationWithParams(@PathVariable Long id, @RequestBody OperationFilterDto operationFilterDto){
     return operationService.getOperation(id, operationFilterDto.getMinAmount(),
         operationFilterDto.getMaxAmount(), operationFilterDto.getDateFrom(), operationFilterDto.getDateEnd());
   }
