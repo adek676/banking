@@ -24,7 +24,7 @@ public class ClientDto {
 
   private boolean vip;
 
-  private boolean resident;
+  private boolean resident = true;
 
   static ClientDto createInstance(ClientEntity clientEntity) {
     ClientDto clientDto = new ClientDto();

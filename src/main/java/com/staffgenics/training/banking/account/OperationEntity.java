@@ -1,4 +1,4 @@
-package com.staffgenics.training.banking.operation;
+package com.staffgenics.training.banking.account;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,6 @@ public class OperationEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  //todo powinna byc zastosowane mopowanie ManyToOne
   private Long accountId;
 
   private BigDecimal amount;
@@ -34,13 +33,12 @@ public class OperationEntity {
   @OneToOne
   private OperationTypeEntity operationType;
 
-  static OperationEntity createInstance(OperationDto operationDto){
-    DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+  static OperationEntity createInstance(Long accountId, OperationDto operationDto){
     Date date = new Date();
 
     OperationEntity operationEntity = new OperationEntity();
     operationEntity.setAmount(operationDto.getAmount());
-    operationEntity.setAccountId(operationDto.getAccountId());
+    operationEntity.setAccountId(accountId);
     operationEntity.setDestinationAccountNumber(operationDto.getDestinationAccountNumber());
     operationEntity.setOperationDate(date);
 

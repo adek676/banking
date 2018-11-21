@@ -1,4 +1,4 @@
-package com.staffgenics.training.banking.account;
+package com.staffgenics.training.banking.common;
 
 import com.staffgenics.training.banking.common.PeselValidator;
 import org.junit.Assert;

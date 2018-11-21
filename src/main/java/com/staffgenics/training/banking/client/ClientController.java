@@ -48,4 +48,9 @@ public class ClientController {
   public void createClient(@RequestBody ClientDto clientDto, @PathVariable Long id) {
     clientService.editClient(clientDto, id);
   }
+
+  @RequestMapping(value = "/client/{clientId}", method = RequestMethod.DELETE)
+  public boolean deleteClient(@PathVariable Long clientId){
+    return clientService.deleteClient(clientId);
+  }
 }

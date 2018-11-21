@@ -1,14 +1,16 @@
 package com.staffgenics.training.banking.client;
 
+import com.staffgenics.training.banking.account.AccountRepository;
+import com.staffgenics.training.banking.account.AccountService;
+import com.staffgenics.training.banking.exceptions.InvalidClientException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
-
-import com.staffgenics.training.banking.exceptions.InvalidClientException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Serwis obsługujący klientów.
@@ -19,9 +21,11 @@ class ClientService {
 
   private final ClientRepository clientRepository;
 
-  @Autowired
-  ClientService(ClientRepository clientRepository) {
+  private final AccountService accountService;
+
+  ClientService(ClientRepository clientRepository, AccountService accountService) {
     this.clientRepository = clientRepository;
+    this.accountService = accountService;
   }
 
   List<ClientDto> getClients() {
@@ -72,6 +76,16 @@ class ClientService {
     }
     clientEntity.update(clientDto);
     clientRepository.save(clientEntity);
+  }
+
+  @Transactional
+  public boolean deleteClient(Long clientId){
+    log.info("Dezaktywacja klienta o id: " + clientId);
+    ClientEntity clientEntity = findClient(clientId);
+    clientEntity.getAccounts().forEach( account -> accountService.deleteAccount(account.getId()));
+    clientEntity.deactivate();
+    clientRepository.save(clientEntity);
+    return true;
   }
 
   private void validateClient(ClientDto clientDto){

@@ -34,11 +34,11 @@ public class Iban {
     return iban;
   }
 
-  public String getRandomNumber(){
+  private String getRandomNumber(){
     Random random = new Random();
-
-    StringBuilder sb = new StringBuilder(countryCode.toString());
-    for (int i = 0; i < 26; i++){
+    int first = random.nextInt(8) + 1;
+    StringBuilder sb = new StringBuilder(countryCode.toString() + first);
+    for (int i = 0; i < 25; i++){
       sb.append(random.nextInt(9));
     }
     return sb.toString();
@@ -55,9 +55,5 @@ public class Iban {
   private boolean isReminder1(BigDecimal number){
     BigDecimal reminderVal = number.remainder(new BigDecimal(97));
     return reminderVal.equals(new BigDecimal(1));
-  }
-
-  public static void main(String[] args) {
-    Iban iban = new Iban("PL");
   }
 }

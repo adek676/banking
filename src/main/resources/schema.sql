@@ -9,6 +9,8 @@ COMMENT ON TABLE client IS 'Klienci banku';
 
 ALTER TABLE client ADD second_name VARCHAR(20);
 ALTER TABLE client ADD vip BOOLEAN NOT NULL;
+ALTER TABLE client add resident BOOLEAN NOT NULL;
+ALTER TABLE client add version INT8 DEFAULT 0;
 
 CREATE TABLE account (
   id BIGSERIAL NOT NULL,
@@ -21,3 +23,5 @@ CREATE TABLE account (
   CONSTRAINT uq_account_account_number UNIQUE (account_number)
 );
 COMMENT ON TABLE account IS 'Konta klientów banku';
+
+

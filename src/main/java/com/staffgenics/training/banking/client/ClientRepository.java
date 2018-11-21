@@ -11,7 +11,7 @@ import java.util.Optional;
  * Repozytorium klientów.
  */
 @Repository
-interface ClientRepository extends JpaRepository<ClientEntity, Long> {
+public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
 
   @Query("select client from ClientEntity client where client.pesel = :pesel")
   Optional<ClientEntity> findClientByPesel(String pesel);

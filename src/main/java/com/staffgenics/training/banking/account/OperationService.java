@@ -1,9 +1,6 @@
-package com.staffgenics.training.banking.operation;
+package com.staffgenics.training.banking.account;
 
-import com.staffgenics.training.banking.account.AccountEntity;
-import com.staffgenics.training.banking.account.AccountRepository;
 import com.staffgenics.training.banking.common.NrbNumberValidator;
-import com.staffgenics.training.banking.currency.CurrencyRatesEntity;
 import com.staffgenics.training.banking.currency.CurrencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +31,7 @@ public class OperationService {
     this.currencyRepository = currencyRepository;
   }
 
-  OperationDto getOperation(Long accountId, Long operationId){
+  OperationDto getOperation(Long operationId, Long accountId){
     OperationEntity entity = operationRepository.findByIdAndAccountId(operationId, accountId);
     return OperationDto.createInstance(entity);
   }
@@ -55,15 +52,15 @@ public class OperationService {
   }
 
   @Transactional
-  public Long createOperation(OperationDto operationDto) {
-    AccountEntity accountEntity = findAccount(operationDto.getAccountId());
+  public Long createOperation(Long accountId, OperationDto operationDto) {
+    AccountEntity accountEntity = findAccount(accountId);
     if (!NrbNumberValidator.isNrbNumberValid(operationDto.getDestinationAccountNumber())) {
       throw new IllegalArgumentException("Podany numer konta nie jest poprawny");
     }
     OperationTypeEntity operationType = findOperationType(operationDto.getOperationType());
 
     updateAccountBalance(accountEntity, operationDto.getAmount(), operationType.isIncome());
-    OperationEntity operationEntity = OperationEntity.createInstance(operationDto);
+    OperationEntity operationEntity = OperationEntity.createInstance(accountId, operationDto);
     operationEntity.setOperationType(operationType);
 
     accountRepository.save(accountEntity);
