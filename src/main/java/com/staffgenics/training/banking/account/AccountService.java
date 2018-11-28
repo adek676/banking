@@ -5,6 +5,9 @@ import com.staffgenics.training.banking.client.ClientRepository;
 import com.staffgenics.training.banking.common.Iban;
 import com.staffgenics.training.banking.currency.CurrencyRatesEntity;
 import com.staffgenics.training.banking.currency.CurrencyRepository;
+import com.staffgenics.training.banking.exceptions.AccountBalanceTooLowException;
+import com.staffgenics.training.banking.exceptions.AccountNotFoundException;
+import com.staffgenics.training.banking.exceptions.ClientNotFoundException;
 import com.staffgenics.training.banking.exceptions.InvalidAccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,7 +53,7 @@ public class AccountService {
     log.info("Dodawanie nowego konta");
     ClientEntity clientEntity = findClient(accountDto.getClientId());
     if (!accountDto.getBalance().equals(new BigDecimal(0))) {
-      throw new InvalidAccountException("New account must have balance equal to 0.");
+      throw new AccountBalanceTooLowException("New account must have balance equal to 0.");
     }
     CurrencyRatesEntity currency = findCurrencyBySymbol(accountDto.getCurrency());
     String accountNumber = new Iban(DEFAULT_ACCOUNT_COUNTRY_CODE).generate();
@@ -80,7 +83,7 @@ public class AccountService {
   private AccountEntity findAccountEntity(Long id) {
     Optional<AccountEntity> accountEntity = accountRepository.findById(id);
     if (!accountEntity.isPresent()) {
-      throw new IllegalArgumentException("Nie znaleziono encji");
+      throw new AccountNotFoundException("Nie znaleziono encji");
     }
     return accountEntity.get();
   }
@@ -88,7 +91,7 @@ public class AccountService {
   private ClientEntity findClient(Long id){
     Optional<ClientEntity> clientEntityOptional = clientRepository.findById(id);
     if (!clientEntityOptional.isPresent()){
-      throw new IllegalArgumentException("Klient o tym id nie isnieje");
+      throw new ClientNotFoundException("Klient o tym id nie isnieje");
     }
     return clientEntityOptional.get();
   }

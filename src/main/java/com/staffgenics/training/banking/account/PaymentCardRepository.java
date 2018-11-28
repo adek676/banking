@@ -15,4 +15,9 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
   List<PaymentCard> findAllByAccountId(Long id);
 
   Optional<PaymentCard> findByNumber(String number);
+
+  @Query("select payment from PaymentCard payment " +
+      "where payment.account.id =:accountId " +
+      "and payment.type = 2")
+  List<PaymentCard> findByAccountAndType(@Param("accountId")Long accountId);
 }

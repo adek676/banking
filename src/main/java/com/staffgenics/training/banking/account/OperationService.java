@@ -2,6 +2,8 @@ package com.staffgenics.training.banking.account;
 
 import com.staffgenics.training.banking.common.NrbNumberValidator;
 import com.staffgenics.training.banking.currency.CurrencyRepository;
+import com.staffgenics.training.banking.exceptions.AccountBalanceTooLowException;
+import jdk.nashorn.internal.runtime.ParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +49,7 @@ public class OperationService {
     try {
       return formatter.parse(dateString);
     }catch (ParseException e){
-      throw new RuntimeException("Invalid date format");
+      throw new ParserException("Invalid date format");
     }
   }
 
@@ -78,7 +80,7 @@ public class OperationService {
     if (currentBalance.compareTo(amount) >= 0) {
       accountEntity.setBalance(currentBalance.subtract(amount));
     } else {
-      throw new IllegalArgumentException("Brak wystarczających środków na koncie");
+      throw new AccountBalanceTooLowException("Brak wystarczających środków na koncie");
     }
   }
 

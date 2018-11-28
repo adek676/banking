@@ -11,9 +11,8 @@ with
 
 	secondBest as(
 		select client, accountId, total, rank from(
-			select client_id client, id accountId, balance total, rank() over (partition by client_id order by balance) rank
+			select client_id client, id accountId, balance total, rank() over (partition by client_id order by balance desc, id asc) rank
 			from account
-			order by client, rank desc, id asc
 			) as ranked
 		where rank = 2
 	),

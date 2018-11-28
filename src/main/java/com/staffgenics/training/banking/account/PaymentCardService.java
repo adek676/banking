@@ -1,7 +1,9 @@
 package com.staffgenics.training.banking.account;
 
+import com.staffgenics.training.banking.BankingProperties;
 import com.staffgenics.training.banking.common.CardNumberGenerator;
 import com.staffgenics.training.banking.common.PaymentCardValidator;
+import com.staffgenics.training.banking.exceptions.CreditCardAmountExceededException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,19 +16,22 @@ import java.util.stream.Collectors;
 @Service
 public class PaymentCardService {
 
-  private PaymentCardRepository paymentCardRepository;
+  private final PaymentCardRepository paymentCardRepository;
 
-  private PaymentCardTypeRepository paymentCardTypeRepository;
+  private final PaymentCardTypeRepository paymentCardTypeRepository;
 
-  private AccountRepository accountRepository;
+  private final AccountRepository accountRepository;
 
-  private CardNumberGenerator cardNumberGenerator;
+  private final CardNumberGenerator cardNumberGenerator;
 
-  public PaymentCardService(PaymentCardRepository paymentCardRepository, AccountRepository accountRepository, PaymentCardValidator paymentCardValidator, PaymentCardTypeRepository paymentCardTypeRepository, CardNumberGenerator cardNumberGenerator) {
+  private final BankingProperties bankingProperties;
+
+  public PaymentCardService(PaymentCardRepository paymentCardRepository, AccountRepository accountRepository, PaymentCardValidator paymentCardValidator, PaymentCardTypeRepository paymentCardTypeRepository, CardNumberGenerator cardNumberGenerator, BankingProperties bankingProperties) {
     this.paymentCardRepository = paymentCardRepository;
     this.accountRepository = accountRepository;
     this.paymentCardTypeRepository = paymentCardTypeRepository;
     this.cardNumberGenerator = cardNumberGenerator;
+    this.bankingProperties = bankingProperties;
   }
 
   List<PaymentCardDto> getPaymentCardsForAccount(Long accountId){
@@ -39,6 +44,10 @@ public class PaymentCardService {
   public Long createPaymentCard(Long accountId, PaymentCardDto paymentCardDto){
     log.info("Tworzenie nowej karty");
     AccountEntity accountEntity = findAccountEntity(accountId);
+    List<PaymentCard> creditCards = findCreditCardsForAccount(accountId);
+    if (creditCards.size() > bankingProperties.getMaxCreditCardAmount()){
+      throw new CreditCardAmountExceededException("Podane konto posiada juz maksymalna ilość kart.");
+    }
     PaymentCardType cardType = findCardType(paymentCardDto.getType());
     String uniqueCardNumber = getUniqueCardNumber();
     PaymentCard paymentCard = PaymentCard.createInstance(paymentCardDto, accountEntity, cardType, uniqueCardNumber);
@@ -52,6 +61,10 @@ public class PaymentCardService {
     paymentCard.deactivateCard();
     paymentCardRepository.save(paymentCard);
     return true;
+  }
+
+  private List<PaymentCard> findCreditCardsForAccount(Long accountId){
+    return paymentCardRepository.findByAccountAndType(accountId);
   }
 
   private List<PaymentCard> findPaymentCards(Long accountId){
