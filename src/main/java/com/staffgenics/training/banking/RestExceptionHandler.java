@@ -2,6 +2,7 @@ package com.staffgenics.training.banking;
 
 import com.staffgenics.training.banking.account.ExceptionMessage;
 import com.staffgenics.training.banking.exceptions.*;
+import com.staffgenics.training.banking.security.EmployeeEntity;
 import jdk.nashorn.internal.runtime.ParserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +22,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     return genericHandle(exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler({AccountNotFoundException.class, ClientNotFoundException.class, CurrencyNotFoundException.class})
+  @ExceptionHandler({NotFoundException.class, AccountNotFoundException.class, ClientNotFoundException.class, CurrencyNotFoundException.class})
   public ResponseEntity<Object> handleAccountNotFoundException(Exception exception, WebRequest request){
     return genericHandle(exception, request, HttpStatus.NOT_FOUND);
   }
 
-  @ExceptionHandler({InvalidAccountException.class, AccountBalanceTooLowException.class})
+  @ExceptionHandler({InvalidAccountException.class, AccountBalanceTooLowException.class, EmployeeAlreadyExistsException.class})
   public ResponseEntity<Object> handleNotFoundException(Exception exception, WebRequest request){
     return genericHandle(exception, request, HttpStatus.BAD_REQUEST);
   }
