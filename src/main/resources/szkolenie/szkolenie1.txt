@@ -1,0 +1,8 @@
+kwota przelewu
+nr rachunku(z ktorego rachunku na ktory)
+
+dodac tabele z waluta
+zamiasta enuma lub booleana o tym czy przelew jest uznaniem czy obciazeniem, nalezy zrobic dodatkowa tabele z dana operacje oraz flage czy jest to uznanie
+konwersja walut wg tabeli
+
+walidacja peselu podstawowa oraz sprawddzanie czy ktos sie nie podszywa pod dany pesel - nie zgadzaja sie dane(imie, nazwisko)

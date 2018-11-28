@@ -1,0 +1,48 @@
+do domu:
+ - zakladnie konta dla klientow zagranicznych(nie maja oni nr pesel o ile nie sa rezydentami)
+ - dodanie daty operacji
+ - ogarniecie klas Date
+ - napisanie generatora numerow konta nrb
+ 
+ 
+ Pojecia, rzeczy do zapamietania: 
+	- n+1 zapytan
+	- metoda getOne() repozytorium
+	- entity graphy
+	- "join" a "join fetch"(jpql)
+	- problem lost update
+	- optimistic locking
+	
+======================================
+
+spring.jpa.open-in-view=true - option
+zakladanie indeksow na tabelach
+
+
+select count(account_id), account_id from account a inner join operation o on a.id = o.account_id
+group by account_id having count(account_id) > 1;
+
+select cl.id, sum(ac.balance) as bogactwo from client cl join account ac on ac.client_id = cl.id
+group by cl.id order by bogactwo desc limit 5;
+
+with ranking as(select client, account, total, rank from(
+	select client_id client, id account, balance total, rank() over (partition by client_id order by balance) rank
+	from account
+	order by client, rank desc, id asc
+	) as ranked
+where rank = 2)
+
+select client_id, max(balance)
+from account 
+where client_id not in (select client from ranking)
+group by client_id
+
+union all
+
+select client, total
+from ranking
+where rank = 2;
+
+
+
+konto klienta na ktorym najwiecej pieniedzy

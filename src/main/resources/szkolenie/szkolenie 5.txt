@@ -1,0 +1,11 @@
+-cqs / cqrs - command query segmentation
+-event sourcing
+-widoki na bazie
+-soft delete
+	@Where - filtrowanie po kontach ktore sa 'active'
+	@SQLDelete - zamiana usuwania encji na ustawianie flagi
+-schedulowanie zadan
+
+pr.dom
+-odpalic joba sprawdzajacego czy karty nie wygasly na podstawie expiration date. Jesli tak to trzeba je ustawic na 'inactive'
+-zacachowac slowniki zawierajace typy kart(oraz waluty?) oraz dodac usluge pobierajaca slowniki 
